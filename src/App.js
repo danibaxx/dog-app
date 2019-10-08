@@ -1,44 +1,49 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import React from 'react'
+// import axios from 'axios';
 // imported with {} due to no default export in file
-import { useInput } from './utilities/input';
+import { useLocalStorage } from './utilities/input';
+import { useDogImages } from './utilities/api';
 
 import './App.css';
 
 function App(props) {
-  const [breed, setBreed] = useInput('doberman');
-  const [images, setImages] = useState([]);
+  const [breed, setBreed] = useLocalStorage('breed', 'doberman');
+  const [count, setCount] = useLocalStorage('count', 1);
+  const [images, setImages] = useDogImages(breed, count);
 
-  useEffect(() => {
-    setImages([])
-    fetchDogImages()
-  }, [breed])
+  // useEffect(() => {
+  //   setImages([])
+  //   fetchDogImages()
+  // }, [breed, count])
 
-  const fetchDogImages = () => {
-    axios
-    .get(`https://dog.ceo/api/breed/${breed}/images`)
-    .then(response => {
-      // console.log("response", response.data.message)
-      setImages(response.data.message)
-      })
-    .catch(error => {
-      console.log('Error', error)
-    })
-  }
-
-  const handleChange = (event) => {
-    setBreed(event.target.value)
-  }
+  // const fetchDogImages = () => {
+  //   axios
+  //   .get(`https://dog.ceo/api/breed/${breed}/images/random/${count}`)
+  //   .then(response => {
+  //     // console.log("response", response.data.message)
+  //     setImages(response.data.message)
+  //     })
+  //   .catch(error => {
+  //     console.log('Error', error)
+  //   })
+  // }
 
   return (
     <>
     <h1>The Dog App</h1>
 
-      <select value={breed} onChange={handleChange}>
+      <select value={breed} onChange={e => setBreed(e.target.value)}>
         <option value='doberman'>Doberman</option>
-        <option value='husky'>Husky</option>
-        <option value='corgi'>Corgi</option>
+        <option value='bullterrier'>Pitbull</option>
+        <option value='dane'>Dane</option>
       </select>
+
+      <input 
+        type='number'
+        placeholder='Image Count'
+        value={count}
+        onChange={e => setCount(e.target.value)}
+      />
       <div>
         {images.map((image, index) => (
           <img 
